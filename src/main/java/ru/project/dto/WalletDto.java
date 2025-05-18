@@ -1,4 +1,4 @@
 package ru.project.dto;
 
-public record WalletDto() {
+public record WalletDto(String walledId, Long amount) {
 }

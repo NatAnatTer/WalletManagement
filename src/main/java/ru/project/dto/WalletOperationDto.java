@@ -1,4 +1,6 @@
 package ru.project.dto;
 
-public record WalletOperationDto() {
+import ru.project.entity.OperationType;
+
+public record WalletOperationDto(String walledId, OperationType operationType, long amount) {
 }
