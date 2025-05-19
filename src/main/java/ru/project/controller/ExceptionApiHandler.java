@@ -18,7 +18,7 @@ public class ExceptionApiHandler {
     @ExceptionHandler(NotEnoughAmountException.class)
     public ResponseEntity<ErrorMessage> NotEnoughAmountException(NotEnoughAmountException exception) {
         return ResponseEntity
-                .status(HttpStatus.PAYMENT_REQUIRED)  //TODO change
+                .status(HttpStatus.PAYMENT_REQUIRED)  //TODO not working
                 .body(new ErrorMessage(exception.getMessage()));
     }
 }

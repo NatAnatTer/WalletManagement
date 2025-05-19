@@ -5,18 +5,17 @@ spring:
     username: "postgres"
     password: "123"
   jpa:
+    database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      show-sql: true
       ddl-auto: update
+      show-sql: true
   liquibase:
     enabled: false
 
-
-
 logging:
   level:
-    org.hibernate.SQL: DEBUG
+    org.hibernate.SQL: TRACE
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     org.hibernate.orm.jdbc.bind: TRACE
 server:

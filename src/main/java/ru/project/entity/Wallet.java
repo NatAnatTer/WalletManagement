@@ -22,6 +22,6 @@ public class Wallet  {
     @GeneratedValue
    private UUID walledId;
 
-   private Long amount;
+   private long amount;
 
 }
