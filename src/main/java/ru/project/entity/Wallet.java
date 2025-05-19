@@ -1,8 +1,6 @@
 package ru.project.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,8 +19,9 @@ import java.util.UUID;
 public class Wallet implements Serializable {
     @Id
     @GeneratedValue
-   private UUID walletId;
+    @Column(name = "wallet_id")
+    private UUID walletId;
 
-   private long amount;
+    private long amount;
 
 }

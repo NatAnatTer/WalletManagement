@@ -1,6 +1,6 @@
 package ru.project.exception;
 
-public class ResourceNotFoundException extends AppException{
+public class ResourceNotFoundException extends AppException {
     public ResourceNotFoundException(String message) {
         super(message);
     }

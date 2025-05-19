@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.project.dto.WalletDto;
 import ru.project.dto.WalletOperationDto;
 import ru.project.entity.Wallet;
-import ru.project.entity.WalletMapper;
+import ru.project.mapper.WalletMapper;
 import ru.project.exception.*;
 import ru.project.repository.WalletRepository;
 
@@ -19,13 +19,9 @@ public class WalletService {
     private final WalletMapper mapper;
 
     public WalletDto createWallet(WalletDto walletDto) {
-     Wallet wallet =   mapper.toWallet(walletDto, walletDto.amount());
-     Wallet wallet1 = repository.save(wallet);
-     WalletDto walletDto1 = mapper.toWalletDto(wallet1);
-       return walletDto1;
-//        Wallet wallet = new Wallet();
-//        wallet.setAmount(0L);
-//        repository.save(wallet);
+        Wallet wallet = new Wallet();
+        wallet.setAmount(walletDto.amount());
+        return mapToDto(repository.save(wallet));
     }
 
     @Transactional

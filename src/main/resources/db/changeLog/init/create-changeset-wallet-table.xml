@@ -9,12 +9,12 @@
         <createTable tableName="wallet">
             <!--Поля -->
             <column
-                    name="walletId" type="uuid">
+                    name="wallet_id" type="uuid">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column
                     name="amount" type="int(8)">
-                <constraints nullable="true" unique="true"/>
+                <constraints nullable="true" unique="false"/>
             </column>
 
         </createTable>
