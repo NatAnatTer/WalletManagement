@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+    <changeSet id="create_table_wallet" author="unknownAuthor">
+        <!-- Таблица card-->
+        <createTable tableName="wallet">
+            <!--Поля -->
+            <column
+                    name="walletId" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column
+                    name="amount" type="int(8)">
+                <constraints nullable="true" unique="true"/>
+            </column>
+
+        </createTable>
+
+    </changeSet>
+
+</databaseChangeLog>

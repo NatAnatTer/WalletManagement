@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldNameConstants;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @Getter
@@ -17,10 +18,10 @@ import java.util.UUID;
 @AllArgsConstructor
 @Entity
 @FieldNameConstants
-public class Wallet  {
+public class Wallet implements Serializable {
     @Id
     @GeneratedValue
-   private UUID walledId;
+   private UUID walletId;
 
    private long amount;
 

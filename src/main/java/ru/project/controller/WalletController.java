@@ -13,19 +13,22 @@ import ru.project.service.WalletService;
 public class WalletController {
 
     private final WalletService service;
+
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/v1/wallets/{walletUuid}")
     public WalletDto getBalance(@PathVariable String walletUuid) {
-       return service.getWallet(walletUuid);
+        return service.getWallet(walletUuid);
     }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/v1/wallet")
     public void createTransaction(@RequestBody WalletOperationDto walletOperationDto) {
         service.changeBalance(walletOperationDto);
     }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/create")
-    public void createWallet() {
-        service.createWallet();
+    public void createWallet(@RequestBody WalletDto walletDto) {
+        service.createWallet(walletDto);
     }
 }
