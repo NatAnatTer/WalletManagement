@@ -15,7 +15,7 @@ public class WalletController {
 
     private final WalletService service;
 
-    @ResponseStatus(HttpStatus.OK)
+
     @GetMapping("/wallets/{walletUuid}")
     public ResponseEntity<WalletDto> getBalance(@PathVariable String walletUuid) {
         return ResponseEntity.ok(service.getWallet(walletUuid));
