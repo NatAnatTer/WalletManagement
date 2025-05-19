@@ -6,8 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.project.dto.WalletDto;
 import ru.project.dto.WalletOperationDto;
 import ru.project.entity.Wallet;
-import ru.project.exception.NotEnoughAmountException;
-import ru.project.exception.ResourceNotFoundException;
+import ru.project.exception.*;
 import ru.project.repository.WalletRepository;
 
 import java.util.UUID;
@@ -24,33 +23,51 @@ public class WalletService {
     }
 @Transactional
     public void changeBalance(WalletOperationDto walletOperationDto) {
-        switch (walletOperationDto.operationType()) {
-            case DEPOSIT -> {
-                Wallet wallet = findById(UUID.fromString(walletOperationDto.walledId()));
-                changeAmountOfWallet(wallet, walletOperationDto.amount());
-
+            try {
+                synchronized (walletOperationDto.walletId()) {
+                    UUID id = UUID.fromString(walletOperationDto.walletId());
+                    switch (walletOperationDto.operationType()) {
+                        case DEPOSIT -> {
+                            Wallet wallet = findById(id);
+                            changeAmountOfWallet(wallet, walletOperationDto.amount());
+                        }
+                        case WITHDRAW -> {
+                            Wallet wallet = findById(id);
+                            checkIfAvailableAmount(wallet.getAmount(), walletOperationDto.amount());
+                            changeAmountOfWallet(wallet, -walletOperationDto.amount());
+                        }
+                    }
+                }
+            }catch (IllegalArgumentException e){
+                throw new UUIDFormatException(e.getMessage());
+            }catch (NullPointerException e){
+                throw new IncorrectFormatDataException(e.getMessage());
             }
-            case WITHDRAW -> {
-                Wallet wallet = findById(UUID.fromString(walletOperationDto.walledId()));
-                checkIfAvailableAmount(wallet.getAmount(), walletOperationDto.amount());
-                changeAmountOfWallet(wallet, walletOperationDto.amount());
-            }
-        }
 
     }
 
     public WalletDto getWallet(String id){
-      Wallet wallet =  repository.findById(UUID.fromString(id)).orElseThrow(() ->new ResourceNotFoundException("Кошелек не найден"));
-     return mapToDto(wallet);
+        try{
+            Wallet wallet =  repository.findById(UUID.fromString(id)).orElseThrow(() ->new ResourceNotFoundException(id));
+            return mapToDto(wallet);
+        }catch (IllegalArgumentException e){
+            throw new UUIDFormatException(e.getMessage());
+        }
+
     }
 
     private Wallet findById(UUID id) {
-        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Кошелек не найден"));
+        try {
+            return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id.toString()));
+        }catch (IllegalArgumentException e){
+            throw new UUIDFormatException(e.getMessage());
+        }
+
     }
 
     private void checkIfAvailableAmount(long amount, long withdraw) {
         if ((amount - withdraw) < 0) {
-            throw new NotEnoughAmountException("Недостаточно средств для выполнения операции");
+            throw new NotEnoughAmountException(String.valueOf(amount));
         }
     }
 
@@ -58,7 +75,7 @@ public class WalletService {
     private void changeAmountOfWallet(Wallet wallet, long amount) {
         wallet.setAmount(wallet.getAmount() + amount);
         if (wallet.getAmount() < 0) {
-            throw new NotEnoughAmountException("Недостаточно средств для выполнения операции");
+            throw new NotEnoughAmountException(String.valueOf(amount));
         } else {
             repository.save(wallet);
         }
