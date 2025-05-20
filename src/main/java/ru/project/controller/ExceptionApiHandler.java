@@ -41,7 +41,7 @@ public class ExceptionApiHandler {
     public ResponseEntity<ErrorMessage> DifferentException(Exception exception) {
         return ResponseEntity
                 .status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-                .body(new ErrorMessage("Ошибка входящих данных. Не корректный JSON " + exception.getMessage()));
+                .body(new ErrorMessage("Ошибка входящих данных. " + exception.getMessage()));
     }
 
     @ExceptionHandler(Throwable.class)

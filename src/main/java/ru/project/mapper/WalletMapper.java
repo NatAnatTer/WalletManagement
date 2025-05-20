@@ -11,4 +11,7 @@ public interface WalletMapper {
     @Mapping(target = "walletId", source = "walletDto.walletId")
     Wallet toWallet(WalletDto walletDto);
 
+    @Mapping(target = "walletId", source = "wallet.walletId")
+    WalletDto toWalletDto(Wallet wallet);
+
 }

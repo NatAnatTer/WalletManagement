@@ -25,43 +25,36 @@ public class WalletService {
     }
 
     @Transactional
-    public void changeBalance(WalletOperationDto walletOperationDto) {
+    public WalletDto changeBalance(WalletOperationDto walletOperationDto) {
+        Wallet withNewBalance = new Wallet();
         try {
             synchronized (walletOperationDto.walletId()) {
-                UUID id = UUID.fromString(walletOperationDto.walletId());
                 switch (walletOperationDto.operationType()) {
                     case DEPOSIT -> {
-                        Wallet wallet = findById(id);
-                        changeAmountOfWallet(wallet, walletOperationDto.amount());
+                        Wallet wallet = findById(walletOperationDto.walletId());
+                        withNewBalance = changeAmountOfWallet(wallet, walletOperationDto.amount());
                     }
                     case WITHDRAW -> {
-                        Wallet wallet = findById(id);
+                        Wallet wallet = findById(walletOperationDto.walletId());
                         checkIfAvailableAmount(wallet.getAmount(), walletOperationDto.amount());
-                        changeAmountOfWallet(wallet, -walletOperationDto.amount());
+                        withNewBalance = changeAmountOfWallet(wallet, -walletOperationDto.amount());
                     }
                 }
             }
-        } catch (IllegalArgumentException e) {
-            throw new UUIDFormatException(e.getMessage());
         } catch (NullPointerException e) {
             throw new IncorrectFormatDataException(e.getMessage());
         }
-
+        return mapper.toWalletDto(withNewBalance);
     }
 
     public WalletDto getWallet(String id) {
-        try {
-            Wallet wallet = repository.findById(UUID.fromString(id)).orElseThrow(() -> new ResourceNotFoundException(id));
-            return mapToDto(wallet);
-        } catch (IllegalArgumentException e) {
-            throw new UUIDFormatException(e.getMessage());
-        }
-
+        Wallet wallet = findById(id);
+        return mapToDto(wallet);
     }
 
-    private Wallet findById(UUID id) {
+    private Wallet findById(String id) {
         try {
-            return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id.toString()));
+            return repository.findById(UUID.fromString(id)).orElseThrow(() -> new ResourceNotFoundException(id));
         } catch (IllegalArgumentException e) {
             throw new UUIDFormatException(e.getMessage());
         }
@@ -75,17 +68,17 @@ public class WalletService {
     }
 
 
-    private void changeAmountOfWallet(Wallet wallet, long amount) {
+    private Wallet changeAmountOfWallet(Wallet wallet, long amount) {
         wallet.setAmount(wallet.getAmount() + amount);
         if (wallet.getAmount() < 0) {
             throw new NotEnoughAmountException(String.valueOf(amount));
         } else {
-            repository.save(wallet);
+            return repository.save(wallet);
         }
     }
 
     private WalletDto mapToDto(Wallet wallet) {
-        return new WalletDto(wallet.getWalletId().toString(), wallet.getAmount());
+        return mapper.toWalletDto(wallet);
     }
 
 }
